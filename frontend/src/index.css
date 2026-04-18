@@ -168,3 +168,47 @@ h1 { font-size: 24px; font-weight: 600; margin-bottom: 4px; }
              border-radius: var(--radius-sm); font-size: 13px; margin-bottom: 14px; }
 .success-banner { background: var(--green-light); color: var(--green-dark); padding: 12px 16px;
                   border-radius: var(--radius-sm); font-size: 14px; margin-bottom: 20px; font-weight: 500; }
+
+/* Action buttons for provider dashboard */
+.action-btn {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid;
+  transition: all 0.15s;
+  white-space: nowrap;
+}
+.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+ 
+.accept-btn {
+  border-color: #1D9E75;
+  color: #1D9E75;
+  background: #E1F5EE;
+}
+.accept-btn:hover:not(:disabled) {
+  background: #1D9E75;
+  color: #fff;
+}
+ 
+.done-btn {
+  border-color: #2563eb;
+  color: #2563eb;
+  background: #eff6ff;
+}
+.done-btn:hover:not(:disabled) {
+  background: #2563eb;
+  color: #fff;
+}
+ 
+.reject-btn {
+  border-color: #ef4444;
+  color: #ef4444;
+  background: #fee2e2;
+}
+.reject-btn:hover:not(:disabled) {
+  background: #ef4444;
+  color: #fff;
+}
+ 

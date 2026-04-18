@@ -66,6 +66,11 @@ export default function Register() {
               onChange={(e) => setForm({ ...form, password: e.target.value })}
               placeholder="At least 6 characters" required />
           </div>
+          <div className="field">
+            <label>Location</label>
+            <input value={form.location} onChange={(e) => setForm({ ...form, location: e.target.value })}
+              placeholder="Hyderabad" required />
+          </div>
           <button type="submit" className="btn-primary" disabled={loading}>
             {loading ? 'Creating account…' : 'Create account'}
           </button>
