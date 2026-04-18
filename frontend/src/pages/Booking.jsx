@@ -11,7 +11,27 @@ function getNext7Days() {
 }
 
 function formatDate(d) {
-  return d.toISOString().split('T')[0]; // YYYY-MM-DD
+  const year  = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day   = String(d.getDate()).padStart(2, '0');
+  return `${year}-${month}-${day}`;
+}
+ 
+// Check if a slot time is in the past for today
+function isSlotPast(slotTime, selectedDate) {
+  const today = new Date();
+  const isToday =
+    selectedDate.getDate()     === today.getDate() &&
+    selectedDate.getMonth()    === today.getMonth() &&
+    selectedDate.getFullYear() === today.getFullYear();
+ 
+  if (!isToday) return false;
+ 
+  const [slotHour, slotMin] = slotTime.split(':').map(Number);
+  const slotDate = new Date();
+  slotDate.setHours(slotHour, slotMin, 0, 0);
+ 
+  return slotDate <= today;
 }
 
 export default function Booking() {
@@ -38,12 +58,16 @@ export default function Booking() {
     if (selectedDate) fetchSlots();
   }, [selectedDate]);
 
-  const fetchSlots = async () => {
-    const { data } = await api.get(`/services/${serviceId}/available-slots`, {
-      params: { date: formatDate(selectedDate) },
-    });
-    setSlots(data);
-    setSelectedSlot(null);
+const fetchSlots = async () => {
+    try {
+      const { data } = await api.get(`/services/${serviceId}/available-slots`, {
+        params: { date: formatDate(selectedDate) },  // local date, no UTC shift
+      });
+      setSlots(data);
+      setSelectedSlot(null);
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   const handleBookAndPay = async () => {
@@ -100,49 +124,100 @@ export default function Booking() {
   const total = item.price + 19;
 
   return (
-    <div className="page">
-      <button className="back-btn" onClick={() => navigate(`/service/${serviceId}`)}>← Back</button>
+     <div className="page">
+      <button className="back-btn" onClick={() => navigate(`/service/${serviceId}`)}>
+        ← Back
+      </button>
+ 
       <h1>Book {item.name}</h1>
-      <p className="subtitle">{centre.centreName}</p>
-
+      <p className="subtitle">{centre.centreName} · {centre.city}</p>
+ 
+      {/* Date picker */}
       <h2 className="section-title" style={{ marginTop: '24px' }}>Choose Date</h2>
       <div className="date-row">
         {getNext7Days().map((d) => (
-          <div key={d.toISOString()}
+          <div
+            key={formatDate(d)}
             className={`date-chip ${formatDate(d) === formatDate(selectedDate) ? 'active' : ''}`}
-            onClick={() => setSelectedDate(d)}>
-            <div className="day">{d.toLocaleDateString('en-IN', { weekday: 'short' })}</div>
+            onClick={() => setSelectedDate(d)}
+          >
+            <div className="day">
+              {d.toLocaleDateString('en-IN', { weekday: 'short' })}
+            </div>
             {d.toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
           </div>
         ))}
       </div>
 
       <h2 className="section-title">Available Slots</h2>
-      <div className="slots-grid">
-        {slots.map((s) => (
-          <div key={s.time}
-            className={`slot ${!s.available ? 'booked' : ''} ${selectedSlot === s.time ? 'selected' : ''}`}
-            onClick={() => s.available && setSelectedSlot(s.time)}>
-            {s.time}
+      {slots.length === 0 ? (
+        <p className="empty-text">No slots configured for this centre yet.</p>
+      ) : (
+        <>
+          <div className="slots-grid">
+            {slots.map((s) => {
+              const past     = isSlotPast(s.time, selectedDate);
+              const unavail  = !s.available || past;
+              const isSelect = selectedSlot === s.time;
+              return (
+                <div
+                  key={s.time}
+                  className={`slot ${unavail ? 'booked' : ''} ${isSelect ? 'selected' : ''}`}
+                  onClick={() => !unavail && setSelectedSlot(s.time)}
+                  title={past ? 'This time has already passed' : !s.available ? 'Already booked' : ''}
+                >
+                  {s.time}
+                  {past && <span style={{ fontSize: '9px', display: 'block', opacity: 0.6 }}>past</span>}
+                </div>
+              );
+            })}
           </div>
-        ))}
-      </div>
+          <div style={{ display: 'flex', gap: '16px', marginTop: '10px', fontSize: '12px', color: 'var(--text-muted)' }}>
+            <span>Strikethrough = booked or past</span>
+            <span style={{ color: '#1D9E75', fontWeight: 500 }}>Green = your selection</span>
+          </div>
+        </>
+      )}
 
       {selectedSlot && (
         <>
-          <h2 className="section-title" style={{ marginTop: '24px' }}>Summary</h2>
+          <h2 className="section-title" style={{ marginTop: '24px' }}>Booking Summary</h2>
           <div className="booking-summary">
-            <div className="summary-row"><span>Service</span><span>{item.name}</span></div>
-            <div className="summary-row"><span>Date</span><span>{formatDate(selectedDate)}</span></div>
-            <div className="summary-row"><span>Time</span><span>{selectedSlot}</span></div>
-            <div className="summary-row"><span>Service fee</span><span>₹{item.price}</span></div>
-            <div className="summary-row"><span>Convenience fee</span><span>₹19</span></div>
-            <div className="summary-row summary-total"><span>Total</span><span>₹{total}</span></div>
+            <div className="summary-row">
+              <span>Service</span><span>{item.name}</span>
+            </div>
+            <div className="summary-row">
+              <span>Date</span>
+              <span>
+                {selectedDate.toLocaleDateString('en-IN', {
+                  day: 'numeric', month: 'long', year: 'numeric',
+                })}
+              </span>
+            </div>
+            <div className="summary-row">
+              <span>Time</span><span>{selectedSlot}</span>
+            </div>
+            <div className="summary-row">
+              <span>Duration</span><span>{item.duration} min</span>
+            </div>
+            <div className="summary-row">
+              <span>Service fee</span><span>₹{item.price}</span>
+            </div>
+            <div className="summary-row">
+              <span>Convenience fee</span><span>₹19</span>
+            </div>
+            <div className="summary-row summary-total">
+              <span>Total</span><span>₹{total}</span>
+            </div>
           </div>
-
+ 
           {error && <div className="error-msg">{error}</div>}
-
-          <button className="btn-primary" onClick={handleBookAndPay} disabled={loading}>
+ 
+          <button
+            className="btn-primary"
+            onClick={handleBookAndPay}
+            disabled={loading}
+          >
             {loading ? 'Processing…' : `Pay ₹${total} via Razorpay`}
           </button>
         </>
