@@ -27,7 +27,7 @@ export default function Register() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
+      <div className="auth-card glass">
         <h2>Create account</h2>
         <p>Join Slotify today</p>
 

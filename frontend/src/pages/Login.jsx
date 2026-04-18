@@ -27,7 +27,7 @@ export default function Login() {
 
   return (
     <div className="auth-container">
-      <div className="auth-card">
+      <div className="auth-card glass">
         <h2>Welcome back</h2>
         <p>Sign in to your Slotify account</p>
         {error && <div className="error-msg">{error}</div>}

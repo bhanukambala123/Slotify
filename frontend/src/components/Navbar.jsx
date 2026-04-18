@@ -1,5 +1,6 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { Home, Calendar, LayoutDashboard, PlusCircle, LogOut } from 'lucide-react';
 
 export default function Navbar() {
   const { user, logout } = useAuth();
@@ -11,22 +12,24 @@ export default function Navbar() {
   };
 
   return (
-    <nav className="navbar">
+    <nav className="navbar glass">
       <Link to="/" className="logo">Slot<span>ify</span></Link>
       {user && (
         <div className="nav-links">
           {user.role === 'user' ? (
             <>
-              <Link to="/">Home</Link>
-              <Link to="/my-bookings">My Bookings</Link>
+              <Link to="/" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Home size={18} /> Home</Link>
+              <Link to="/my-bookings" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Calendar size={18} /> My Bookings</Link>
             </>
           ) : (
             <>
-              <Link to="/dashboard">Dashboard</Link>
-              <Link to="/add-service">+ Add Service</Link>
+              <Link to="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><LayoutDashboard size={18} /> Dashboard</Link>
+              <Link to="/add-service" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><PlusCircle size={18} /> Add Service</Link>
             </>
           )}
-          <button onClick={handleLogout} className="btn-outline-sm">Logout</button>
+          <button onClick={handleLogout} className="btn-outline-sm" style={{ display: 'flex', alignItems: 'center', gap: '6px' }}>
+            <LogOut size={16} /> Logout
+          </button>
         </div>
       )}
     </nav>

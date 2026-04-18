@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { ArrowLeft } from 'lucide-react';
 
 const DEFAULT_SLOTS = ['09:00','10:00','11:00','12:00','14:00','15:00','16:00','17:00'];
 
@@ -43,7 +44,7 @@ export default function AddService() {
 
   return (
     <div className="page">
-      <button className="back-btn" onClick={() => navigate('/dashboard')}>← Dashboard</button>
+      <button className="back-btn" onClick={() => navigate('/dashboard')}><ArrowLeft size={16} /> Dashboard</button>
       <h1>Add Service Centre</h1>
 
       {error && <div className="error-msg">{error}</div>}

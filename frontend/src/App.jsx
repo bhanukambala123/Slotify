@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuth } from './context/AuthContext';
 import Navbar            from './components/Navbar';
@@ -9,6 +10,7 @@ import Booking           from './pages/Booking';
 import MyBookings        from './pages/MyBookings';
 import ProviderDashboard from './pages/ProviderDashboard';
 import AddService        from './pages/AddService';
+import Splash            from './components/Splash';
 
 function ProtectedRoute({ children, providerOnly = false }) {
   const { user } = useAuth();
@@ -18,6 +20,12 @@ function ProtectedRoute({ children, providerOnly = false }) {
 }
 
 export default function App() {
+  const [showSplash, setShowSplash] = useState(true);
+
+  if (showSplash) {
+    return <Splash onFinish={() => setShowSplash(false)} />;
+  }
+
   return (
     <>
       <Navbar />

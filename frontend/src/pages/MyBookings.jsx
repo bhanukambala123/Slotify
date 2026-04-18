@@ -38,7 +38,7 @@ export default function MyBookings() {
       ) : (
         <div className="booking-list">
           {bookings.map((b) => (
-            <div key={b._id} className="booking-item">
+            <div key={b._id} className="booking-item glass">
               <div className="booking-info">
                 <p className="booking-title">
                   {b.service?.centreName} — {b.serviceItem?.name}

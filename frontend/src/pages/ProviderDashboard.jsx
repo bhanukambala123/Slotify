@@ -55,15 +55,15 @@ export default function ProviderDashboard() {
 
       {/* Stats */}
       <div className="sp-stats">
-        <div className="stat-card">
+        <div className="stat-card glass">
           <p className="stat-label">Today's bookings</p>
           <p className="stat-val">{todayCount}</p>
         </div>
-        <div className="stat-card">
+        <div className="stat-card glass">
           <p className="stat-label">Total bookings</p>
           <p className="stat-val">{bookings.length}</p>
         </div>
-        <div className="stat-card">
+        <div className="stat-card glass">
           <p className="stat-label">Revenue earned</p>
           <p className="stat-val">₹{revenue.toLocaleString()}</p>
         </div>
@@ -75,7 +75,7 @@ export default function ProviderDashboard() {
         <p className="empty-text">No services added yet.</p>
       ) : (
         services.map((s) => (
-          <div key={s._id} className="booking-item" style={{ marginBottom: '10px' }}>
+          <div key={s._id} className="booking-item glass" style={{ marginBottom: '10px' }}>
             <div className="booking-info">
               <p className="booking-title">{s.centreName}</p>
               <p className="booking-meta">
@@ -96,7 +96,7 @@ export default function ProviderDashboard() {
       ) : (
         <div className="booking-list">
           {bookings.map((b) => (
-            <div key={b._id} className="booking-item">
+            <div key={b._id} className="booking-item glass">
               <div className="booking-info">
                 <p className="booking-title">
                   {b.user?.name} — {b.serviceItem?.name}

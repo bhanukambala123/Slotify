@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import api from '../api/axios';
+import { ArrowLeft } from 'lucide-react';
 
 function getNext7Days() {
   return Array.from({ length: 7 }, (_, i) => {
@@ -107,7 +108,7 @@ const fetchSlots = async () => {
           navigate('/my-bookings', { state: { success: true } });
         },
         prefill: { name: '', email: '', contact: '' },
-        theme:   { color: '#1D9E75' },
+        theme:   { color: '#8B5CF6' },
       };
 
       const rzp = new window.Razorpay(options);
@@ -126,7 +127,7 @@ const fetchSlots = async () => {
   return (
      <div className="page">
       <button className="back-btn" onClick={() => navigate(`/service/${serviceId}`)}>
-        ← Back
+        <ArrowLeft size={16} /> Back
       </button>
  
       <h1>Book {item.name}</h1>
