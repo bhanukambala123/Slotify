@@ -9,6 +9,7 @@ const allowedOrigins = [
   process.env.CLIENT_URL,
   'http://localhost:5173',
   'http://localhost:5174',
+  'https://slotify-1ndl.vercel.app',
 ].filter(Boolean);
 
 app.use(cors({ origin: allowedOrigins }));
