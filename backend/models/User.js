@@ -13,6 +13,9 @@ const userSchema = new mongoose.Schema(
       city: String,
       coordinates: { lat: Number, lng: Number },
     },
+    isVerified: { type: Boolean, default: false },
+    verificationOtp: { type: String },
+    otpExpiresAt: { type: Date },
   },
   { timestamps: true }
 );

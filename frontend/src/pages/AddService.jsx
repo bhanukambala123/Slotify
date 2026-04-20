@@ -63,7 +63,7 @@ export default function AddService() {
             <select value={form.category}
               onChange={(e) => setForm({ ...form, category: e.target.value })}>
               <option value="salon">Salon</option>
-              <option value="car_cleaning">Car Cleaning</option>
+              <option value="car_cleaning">Car Washing</option>
               <option value="repair">Repair</option>
               <option value="other">Other</option>
             </select>

@@ -4,6 +4,7 @@ const Razorpay = require('razorpay');
 const crypto   = require('crypto');
 const Booking  = require('../models/Booking');
 const { protect } = require('../middleware/auth');
+const { sendBookingConfirmation } = require('../utils/email');
 
 const razorpay = new Razorpay({
   key_id:     process.env.RAZORPAY_KEY_ID,
@@ -48,12 +49,23 @@ router.post('/verify', protect, async (req, res) => {
     if (expectedSig !== razorpay_signature)
       return res.status(400).json({ message: 'Payment verification failed' });
 
-    const booking = await Booking.findById(bookingId);
+    const booking = await Booking.findById(bookingId).populate('user').populate('service');
     booking.payment.razorpayPaymentId = razorpay_payment_id;
     booking.payment.status = 'paid';
     booking.payment.paidAt = new Date();
     booking.status         = 'confirmed';
     await booking.save();
+
+    // Send confirmation email
+    if (booking.user && booking.user.email) {
+      await sendBookingConfirmation(booking.user.email, {
+        serviceName: booking.serviceItem.name,
+        centreName: booking.service.centreName,
+        date: new Date(booking.date).toLocaleDateString('en-IN'),
+        time: booking.timeSlot,
+        price: booking.serviceItem.price,
+      });
+    }
 
     res.json({ message: 'Payment verified and booking confirmed', booking });
   } catch (err) {
