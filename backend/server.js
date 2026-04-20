@@ -10,6 +10,7 @@ const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:5174',
   'https://slotify-1ndl.vercel.app',
+  'https://slotify-h3ps.vercel.app',
 ].filter(Boolean);
 
 app.use(cors({ origin: allowedOrigins }));
